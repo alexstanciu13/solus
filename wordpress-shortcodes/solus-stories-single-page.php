@@ -86,314 +86,375 @@ add_shortcode('solus_stories', function($atts) {
     ?>
 
 <!-- ============================================
-     INLINE CSS
+     INLINE CSS - THEME-ISOLATED STYLES
      ============================================ -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+/* Reset all children to prevent theme interference */
+.solus-stories-app,
 .solus-stories-app * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
 }
 
 .solus-stories-app {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #faf8f5;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    background: #faf8f5 !important;
+    background-color: #faf8f5 !important;
     min-height: 100vh;
-    color: #2a2a2a;
-    line-height: 1.5;
+    color: #2a2a2a !important;
+    line-height: 1.5 !important;
 }
 
-.font-playfair { font-family: 'Playfair Display', serif; }
+/* Reset theme link styles */
+.solus-stories-app a,
+.solus-stories-app a:visited,
+.solus-stories-app a:hover,
+.solus-stories-app a:active {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+/* Reset theme heading styles */
+.solus-stories-app h1,
+.solus-stories-app h2,
+.solus-stories-app h3,
+.solus-stories-app h4,
+.solus-stories-app h5,
+.solus-stories-app h6 {
+    font-weight: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Reset theme paragraph styles */
+.solus-stories-app p {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    line-height: inherit !important;
+}
+
+/* Reset theme button/input styles */
+.solus-stories-app button,
+.solus-stories-app input {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    font-family: inherit !important;
+}
+
+.font-playfair {
+    font-family: 'Playfair Display', serif !important;
+}
 
 /* ============================================
    STORIES LISTING VIEW
    ============================================ */
-.solus-stories-listing {
-    display: block;
+.solus-stories-app .solus-stories-listing {
+    display: block !important;
 }
 
-.solus-stories-listing.hidden {
-    display: none;
+.solus-stories-app .solus-stories-listing.hidden {
+    display: none !important;
 }
 
-.solus-stories-hero {
-    padding: 128px 32px 80px;
-    text-align: center;
+.solus-stories-app .solus-stories-hero {
+    padding: 128px 32px 80px !important;
+    text-align: center !important;
 }
 
-.solus-stories-hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 8vw, 64px);
-    font-weight: 700;
-    color: #000;
-    letter-spacing: 0.05em;
-    margin: 0 0 16px;
-    line-height: 1.1;
+.solus-stories-app .solus-stories-hero h1 {
+    font-family: 'Playfair Display', serif !important;
+    font-size: clamp(36px, 8vw, 64px) !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    letter-spacing: 0.05em !important;
+    margin: 0 0 16px 0 !important;
+    line-height: 1.1 !important;
 }
 
-.solus-stories-hero p {
-    font-size: 15px;
-    font-weight: 300;
-    color: #2a2a2a;
-    line-height: 1.8;
-    max-width: 768px;
-    margin: 0 auto;
+.solus-stories-app .solus-stories-hero p {
+    font-size: 15px !important;
+    font-weight: 300 !important;
+    color: #2a2a2a !important;
+    line-height: 1.8 !important;
+    max-width: 768px !important;
+    margin: 0 auto !important;
 }
 
-.solus-stories-grid {
-    padding: 0 32px 128px;
-    max-width: 1800px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 48px;
+.solus-stories-app .solus-stories-grid {
+    padding: 0 32px 128px !important;
+    max-width: 1800px !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
 }
 
 @media (min-width: 768px) {
-    .solus-stories-grid {
-        grid-template-columns: repeat(3, 1fr);
-        padding: 0 64px 128px;
-        gap: 64px;
+    .solus-stories-app .solus-stories-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        padding: 0 64px 128px !important;
+        gap: 64px !important;
     }
 }
 
-.solus-story-card {
-    cursor: pointer;
-    transition: transform 0.3s ease;
+.solus-stories-app .solus-story-card {
+    cursor: pointer !important;
+    transition: transform 0.3s ease !important;
 }
 
-.solus-story-card:hover {
-    transform: translateY(-4px);
+.solus-stories-app .solus-story-card:hover {
+    transform: translateY(-4px) !important;
 }
 
-.solus-story-image {
-    position: relative;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    margin-bottom: 24px;
+.solus-stories-app .solus-story-image {
+    position: relative !important;
+    aspect-ratio: 3/4 !important;
+    overflow: hidden !important;
+    margin-bottom: 24px !important;
 }
 
-.solus-story-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s ease;
+.solus-stories-app .solus-story-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transition: transform 0.7s ease !important;
 }
 
-.solus-story-card:hover .solus-story-image img {
-    transform: scale(1.05);
+.solus-stories-app .solus-story-card:hover .solus-story-image img {
+    transform: scale(1.05) !important;
 }
 
-.solus-story-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2), transparent);
+.solus-stories-app .solus-story-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2), transparent) !important;
 }
 
-.solus-story-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 32px;
-    color: white;
+.solus-stories-app .solus-story-info {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 32px !important;
+    color: white !important;
 }
 
-.solus-story-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 8px;
+.solus-stories-app .solus-story-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+    color: white !important;
 }
 
-.solus-story-caption {
-    font-size: 13px;
-    font-weight: 300;
-    color: #c9a66b;
-    line-height: 1.6;
+.solus-stories-app .solus-story-caption {
+    font-size: 13px !important;
+    font-weight: 300 !important;
+    color: #c9a66b !important;
+    line-height: 1.6 !important;
 }
 
-.solus-story-cta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.solus-stories-app .solus-story-cta {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
 }
 
-.solus-story-card:hover .solus-story-cta {
-    opacity: 1;
+.solus-stories-app .solus-story-card:hover .solus-story-cta {
+    opacity: 1 !important;
 }
 
-.solus-story-cta-text {
-    font-size: 12px;
-    font-weight: 500;
-    color: #c9a66b;
-    letter-spacing: 0.1em;
+.solus-stories-app .solus-story-cta-text {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #c9a66b !important;
+    letter-spacing: 0.1em !important;
+}
+
+.solus-stories-app .solus-story-cta svg {
+    color: #c9a66b !important;
+    stroke: currentColor !important;
 }
 
 /* ============================================
    INDIVIDUAL STORY VIEW
    ============================================ */
-.solus-story-view {
-    display: none;
+.solus-stories-app .solus-story-view {
+    display: none !important;
 }
 
-.solus-story-view.active {
-    display: block;
+.solus-stories-app .solus-story-view.active {
+    display: block !important;
 }
 
-.solus-story-back {
-    position: fixed;
-    top: 128px;
-    left: 32px;
-    z-index: 10;
+.solus-stories-app .solus-story-back {
+    position: fixed !important;
+    top: 128px !important;
+    left: 32px !important;
+    z-index: 10 !important;
 }
 
 @media (min-width: 1024px) {
-    .solus-story-back {
-        left: 64px;
+    .solus-stories-app .solus-story-back {
+        left: 64px !important;
     }
 }
 
-.solus-story-back-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #2a2a2a;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-    font-family: inherit;
+.solus-stories-app .solus-story-back-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #2a2a2a !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.08em !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: color 0.3s !important;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
-.solus-story-back-btn:hover {
-    color: #c9a66b;
+.solus-stories-app .solus-story-back-btn:hover {
+    color: #c9a66b !important;
 }
 
-.solus-story-hero-image {
-    position: relative;
-    height: 70vh;
-    overflow: hidden;
+.solus-stories-app .solus-story-back-btn svg {
+    stroke: currentColor !important;
 }
 
-.solus-story-hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.solus-stories-app .solus-story-hero-image {
+    position: relative !important;
+    height: 70vh !important;
+    overflow: hidden !important;
 }
 
-.solus-story-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3), #faf8f5);
+.solus-stories-app .solus-story-hero-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
 }
 
-.solus-story-content {
-    position: relative;
-    margin-top: -128px;
-    z-index: 10;
+.solus-stories-app .solus-story-hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3), #faf8f5) !important;
 }
 
-.solus-story-inner {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 0 32px;
+.solus-stories-app .solus-story-content {
+    position: relative !important;
+    margin-top: -128px !important;
+    z-index: 10 !important;
 }
 
-.solus-story-body {
-    background: #faf8f5;
-    padding: 64px 0 128px;
+.solus-stories-app .solus-story-inner {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    padding: 0 32px !important;
 }
 
-.solus-story-header {
-    text-align: center;
-    margin-bottom: 64px;
+.solus-stories-app .solus-story-body {
+    background: #faf8f5 !important;
+    background-color: #faf8f5 !important;
+    padding: 64px 0 128px !important;
 }
 
-.solus-story-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 8vw, 56px);
-    font-weight: 700;
-    color: #000;
-    letter-spacing: 0.03em;
-    margin: 0 0 16px;
-    line-height: 1.2;
+.solus-stories-app .solus-story-header {
+    text-align: center !important;
+    margin-bottom: 64px !important;
 }
 
-.solus-story-header p {
-    font-size: 14px;
-    font-weight: 300;
-    color: #c9a66b;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+.solus-stories-app .solus-story-header h1 {
+    font-family: 'Playfair Display', serif !important;
+    font-size: clamp(36px, 8vw, 56px) !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    letter-spacing: 0.03em !important;
+    margin: 0 0 16px 0 !important;
+    line-height: 1.2 !important;
 }
 
-.solus-story-article {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+.solus-stories-app .solus-story-header p {
+    font-size: 14px !important;
+    font-weight: 300 !important;
+    color: #c9a66b !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
 }
 
-.solus-story-paragraph {
-    font-size: 16px;
-    font-weight: 300;
-    color: #2a2a2a;
-    line-height: 2;
-    text-align: justify;
+.solus-stories-app .solus-story-article {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
 }
 
-.solus-story-cta-section {
-    margin-top: 80px;
-    text-align: center;
+.solus-stories-app .solus-story-paragraph {
+    font-size: 16px !important;
+    font-weight: 300 !important;
+    color: #2a2a2a !important;
+    line-height: 2 !important;
+    text-align: justify !important;
 }
 
-.solus-story-cta-btn {
-    display: inline-block;
-    border: 2px solid #000;
-    padding: 16px 48px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-decoration: none;
-    color: #000;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-family: inherit;
+.solus-stories-app .solus-story-cta-section {
+    margin-top: 80px !important;
+    text-align: center !important;
 }
 
-.solus-story-cta-btn:hover {
-    background: #000;
-    color: #fff;
+.solus-stories-app .solus-story-cta-btn {
+    display: inline-block !important;
+    border: 2px solid #000 !important;
+    padding: 16px 48px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.12em !important;
+    text-decoration: none !important;
+    color: #000 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
-.solus-story-brand {
-    border-top: 1px solid rgba(0,0,0,0.1);
-    padding: 48px 0;
-    background: #fff;
-    text-align: center;
+.solus-stories-app .solus-story-cta-btn:hover {
+    background: #000 !important;
+    background-color: #000 !important;
+    color: #fff !important;
 }
 
-.solus-story-brand-mark {
-    display: inline-block;
-    padding: 8px 24px;
-    border: 1px solid rgba(201, 166, 107, 0.3);
+.solus-stories-app .solus-story-brand {
+    border-top: 1px solid rgba(0,0,0,0.1) !important;
+    padding: 48px 0 !important;
+    background: #fff !important;
+    background-color: #fff !important;
+    text-align: center !important;
 }
 
-.solus-story-brand-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #c9a66b;
+.solus-stories-app .solus-story-brand-mark {
+    display: inline-block !important;
+    padding: 8px 24px !important;
+    border: 1px solid rgba(201, 166, 107, 0.3) !important;
+}
+
+.solus-stories-app .solus-story-brand-text {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #c9a66b !important;
 }
 </style>
 
