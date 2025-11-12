@@ -1,0 +1,1179 @@
+/**
+ * SOLUS CUSTOM EMBROIDERY STYLES
+ * Matches Figma design tokens and luxury aesthetic
+ *
+ * Upload to: wp-content/themes/astra-child/assets/solus-embroidery.css
+ */
+
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+
+:root {
+    /* Brand Colors */
+    --solus-gold: #c9a66b;
+    --solus-black: #000000;
+    --solus-off-white: #faf8f5;
+    --solus-charcoal: #2a2a2a;
+    --solus-navy: #1a365d;
+
+    /* UI Colors */
+    --solus-white: #ffffff;
+    --solus-gray-50: #f8f8f8;
+    --solus-gray-100: #ececf0;
+    --solus-gray-200: #e5e7eb;
+    --solus-gray-400: #999999;
+    --solus-gray-600: #666666;
+    --solus-gray-900: #0d0d0d;
+
+    /* Border Radius */
+    --solus-radius: 10px;
+    --solus-radius-sm: 6px;
+    --solus-radius-xl: 14px;
+
+    /* Spacing */
+    --solus-container: min(1400px, 92vw);
+    --solus-container-narrow: min(1120px, 92vw);
+
+    /* Typography */
+    --font-playfair: 'Playfair Display', serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+
+.solus-embroidery-catalog *,
+.solus-embroidery-product * {
+    box-sizing: border-box;
+}
+
+.solus-embroidery-catalog,
+.solus-embroidery-product {
+    font-family: 'Montserrat', var(--font-sans);
+    color: var(--solus-black);
+    background-color: var(--solus-off-white);
+    line-height: 1.5;
+}
+
+.font-playfair {
+    font-family: var(--font-playfair);
+}
+
+.font-serif {
+    font-family: var(--font-playfair);
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* ============================================
+   CATALOG PAGE
+   ============================================ */
+
+/* Hero Section */
+.solus-emb-hero {
+    padding: 128px 24px 80px;
+    text-align: center;
+    background: var(--solus-off-white);
+}
+
+.solus-emb-hero__title {
+    font-family: var(--font-playfair);
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin: 0 0 24px;
+    line-height: 1.1;
+}
+
+.solus-emb-hero__text {
+    max-width: 672px;
+    margin: 0 auto 16px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--solus-gray-600);
+}
+
+.solus-emb-hero__badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: var(--solus-white);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--solus-gray-600);
+}
+
+/* Product Grid */
+.solus-emb-grid {
+    padding: 0 24px 128px;
+}
+
+.solus-emb-grid__inner {
+    max-width: var(--solus-container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+@media (min-width: 768px) {
+    .solus-emb-grid {
+        padding: 0 48px 128px;
+    }
+    .solus-emb-grid__inner {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-grid {
+        padding: 0 80px 128px;
+    }
+    .solus-emb-grid__inner {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Product Card */
+.solus-emb-card {
+    display: block;
+    background: var(--solus-white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.5s ease;
+}
+
+.solus-emb-card:hover {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.solus-emb-card__media {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--solus-gray-100);
+}
+
+.solus-emb-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.solus-emb-card:hover .solus-emb-card__media img {
+    transform: scale(1.05);
+}
+
+.solus-emb-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.5s ease;
+}
+
+.solus-emb-card:hover .solus-emb-card__overlay {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.solus-emb-card__body {
+    padding: 24px;
+}
+
+.solus-emb-card__title {
+    font-family: var(--font-playfair);
+    font-size: 24px;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px;
+}
+
+.solus-emb-card__desc {
+    font-size: 12px;
+    color: var(--solus-gray-400);
+    letter-spacing: 0.05em;
+    margin: 0 0 16px;
+}
+
+.solus-emb-card__price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.solus-emb-card__price-label {
+    font-size: 14px;
+    color: var(--solus-gray-600);
+}
+
+.solus-emb-card__price-value {
+    font-family: var(--font-playfair);
+    font-size: 20px;
+}
+
+.solus-emb-card__cta {
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.solus-emb-btn-outline {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--solus-black);
+    color: var(--solus-black);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.solus-emb-card:hover .solus-emb-btn-outline {
+    background: var(--solus-black);
+    color: var(--solus-white);
+}
+
+/* Info Section */
+.solus-emb-info {
+    padding: 0 24px 128px;
+}
+
+.solus-emb-info__grid {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .solus-emb-info {
+        padding: 0 48px 128px;
+    }
+    .solus-emb-info__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-info {
+        padding: 0 80px 128px;
+    }
+}
+
+.solus-emb-info__item {
+    padding: 32px;
+    background: var(--solus-white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.solus-emb-info__title {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    margin: 0 0 12px;
+}
+
+.solus-emb-info__text {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--solus-gray-600);
+    margin: 0;
+}
+
+/* ============================================
+   PRODUCT CUSTOMIZATION PAGE
+   ============================================ */
+
+.solus-embroidery-product {
+    min-height: 100vh;
+    background: var(--solus-off-white);
+    padding-bottom: 80px;
+}
+
+/* Back Button */
+.solus-emb-back {
+    padding: 96px 24px 24px;
+}
+
+@media (min-width: 768px) {
+    .solus-emb-back {
+        padding: 96px 48px 24px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-back {
+        padding: 96px 80px 24px;
+    }
+}
+
+.solus-emb-back__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--solus-black);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    transition: opacity 0.3s ease;
+}
+
+.solus-emb-back__link:hover {
+    opacity: 0.6;
+}
+
+/* Main Layout */
+.solus-emb-layout {
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+}
+
+@media (min-width: 768px) {
+    .solus-emb-layout {
+        padding: 0 48px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-layout {
+        padding: 0 80px;
+        grid-template-columns: 500px 1fr;
+        gap: 48px;
+    }
+}
+
+/* Preview (Left Side - Sticky on Desktop) */
+.solus-emb-preview {
+    position: relative;
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-preview {
+        position: sticky;
+        top: 96px;
+        align-self: start;
+    }
+}
+
+.solus-emb-preview__container {
+    position: relative;
+    background: var(--solus-white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.solus-emb-preview__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.solus-emb-preview__color-overlay {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.solus-emb-preview__color-overlay.active {
+    opacity: 0.2;
+}
+
+.solus-emb-preview__embroidery {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* Embroidery Preview Elements (Created by JS) */
+.solus-emb-text-preview {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solus-emb-text-preview__box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    padding: 12px 24px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.solus-emb-text-preview__text {
+    font-size: clamp(12px, 2vw, 18px);
+    letter-spacing: 0.05em;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.solus-emb-design-preview {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solus-emb-design-preview__box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    padding: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solus-emb-design-preview__box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.solus-emb-design-preview__placeholder {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    padding: 12px 20px;
+    border: 2px dashed rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    font-size: clamp(9px, 2vw, 11px);
+    color: var(--solus-gray-600);
+    letter-spacing: 0.08em;
+}
+
+.solus-emb-custom-badge {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    pointer-events: none;
+}
+
+.solus-emb-custom-badge__box {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(4px);
+    padding: 16px 24px;
+    border: 2px solid var(--solus-gold);
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.solus-emb-custom-badge__title {
+    font-size: clamp(10px, 2vw, 12px);
+    color: var(--solus-gold);
+    letter-spacing: 0.1em;
+    margin: 0 0 8px;
+}
+
+.solus-emb-custom-badge__text {
+    font-size: clamp(8px, 1.5vw, 10px);
+    color: white;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Mobile Preview (Shown before summary on mobile) */
+.solus-emb-mobile-preview {
+    display: block;
+}
+
+@media (min-width: 1024px) {
+    .solus-emb-mobile-preview {
+        display: none;
+    }
+}
+
+/* Customization Options (Right Side) */
+.solus-emb-customize {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Product Header */
+.solus-emb-product-header {
+    margin-bottom: 8px;
+}
+
+.solus-emb-product-title {
+    font-family: var(--font-playfair);
+    font-size: clamp(32px, 6vw, 56px);
+    letter-spacing: 0.05em;
+    margin: 0 0 12px;
+    line-height: 1.1;
+}
+
+.solus-emb-product-subtitle {
+    font-size: 14px;
+    color: var(--solus-gray-600);
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+/* Step Container */
+.solus-emb-step {
+    background: var(--solus-white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.solus-emb-step__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    margin: 0 0 24px;
+    font-weight: 600;
+}
+
+.solus-emb-step__number {
+    width: 32px;
+    height: 32px;
+    background: var(--solus-black);
+    color: var(--solus-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* Field Container */
+.solus-emb-field {
+    margin-bottom: 24px;
+}
+
+.solus-emb-field:last-child {
+    margin-bottom: 0;
+}
+
+.solus-emb-field__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.solus-emb-field__label {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--solus-gray-600);
+    font-weight: 500;
+}
+
+/* Size Guide Toggle */
+.solus-emb-size-guide-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: rgba(0, 0, 0, 0.6);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.solus-emb-size-guide-toggle:hover {
+    color: var(--solus-black);
+}
+
+.solus-emb-size-guide-toggle svg {
+    transition: transform 0.3s ease;
+}
+
+.solus-emb-size-guide-toggle.active svg {
+    transform: rotate(180deg);
+}
+
+/* Size Guide */
+.solus-emb-size-guide {
+    margin-bottom: 16px;
+    padding: 20px;
+    background: var(--solus-off-white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
+.solus-emb-size-guide__title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--solus-black);
+    margin: 0 0 16px;
+    font-weight: 600;
+}
+
+.solus-emb-size-table {
+    width: 100%;
+    font-size: 11px;
+    border-collapse: collapse;
+}
+
+.solus-emb-size-table th {
+    text-align: left;
+    padding: 8px 16px 8px 0;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.solus-emb-size-table td {
+    padding: 8px 16px 8px 0;
+    color: var(--solus-gray-600);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.solus-emb-size-guide__note {
+    margin: 16px 0 0;
+    font-size: 10px;
+    color: var(--solus-gray-400);
+    line-height: 1.6;
+}
+
+/* Size Buttons */
+.solus-emb-sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.solus-emb-size-btn {
+    padding: 12px 24px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: var(--solus-white);
+    color: var(--solus-black);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.solus-emb-size-btn:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-size-btn.active {
+    background: var(--solus-black);
+    color: var(--solus-white);
+    border-color: var(--solus-black);
+}
+
+/* Color Buttons */
+.solus-emb-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.solus-emb-color-btn {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.solus-emb-color-btn:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-color-btn.active {
+    border-color: var(--solus-black);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.solus-emb-color-check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+.solus-emb-color-btn.active .solus-emb-color-check {
+    opacity: 1;
+}
+
+.solus-emb-color-selected {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--solus-gray-600);
+}
+
+/* Embroidery Type Buttons */
+.solus-emb-types {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.solus-emb-type-btn {
+    width: 100%;
+    text-align: left;
+    padding: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: var(--solus-white);
+    color: var(--solus-black);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.solus-emb-type-btn:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-type-btn.active {
+    background: var(--solus-black);
+    color: var(--solus-white);
+    border-color: var(--solus-black);
+}
+
+.solus-emb-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.solus-emb-type-label {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+.solus-emb-type-price {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.solus-emb-type-desc {
+    font-size: 12px;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* Form Inputs */
+.solus-emb-input,
+.solus-emb-textarea,
+.solus-emb-select {
+    width: 100%;
+    background: var(--solus-white);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    padding: 12px 16px;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.solus-emb-input:focus,
+.solus-emb-textarea:focus,
+.solus-emb-select:focus {
+    outline: none;
+    border-color: var(--solus-black);
+}
+
+.solus-emb-textarea {
+    resize: vertical;
+}
+
+.solus-emb-char-count {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--solus-gray-400);
+}
+
+/* Font Buttons */
+.solus-emb-fonts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+@media (min-width: 768px) {
+    .solus-emb-fonts {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.solus-emb-font-btn {
+    padding: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: var(--solus-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.solus-emb-font-btn:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-font-btn.active {
+    border-color: var(--solus-black);
+    background: var(--solus-white);
+}
+
+.solus-emb-font-preview {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.solus-emb-font-name {
+    font-size: 10px;
+}
+
+/* Thread Color Buttons */
+.solus-emb-thread-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.solus-emb-thread-btn {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.solus-emb-thread-btn:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-thread-btn.active {
+    border-color: var(--solus-black);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.solus-emb-thread-check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+.solus-emb-thread-btn.active .solus-emb-thread-check {
+    opacity: 1;
+}
+
+/* File Upload */
+.solus-emb-upload__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--solus-white);
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+    padding: 32px 16px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    font-size: 13px;
+}
+
+.solus-emb-upload__label:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-upload__preview {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.solus-emb-upload__preview img {
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.solus-emb-upload__remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--solus-black);
+    color: var(--solus-white);
+    border: none;
+    border-radius: 50%;
+    padding: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.solus-emb-upload__remove:hover {
+    transform: scale(1.1);
+}
+
+/* Radio Buttons */
+.solus-emb-color-type {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.solus-emb-radio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.solus-emb-radio:hover {
+    border-color: var(--solus-black);
+}
+
+.solus-emb-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--solus-black);
+}
+
+.solus-emb-radio span {
+    font-size: 13px;
+}
+
+/* Info Box */
+.solus-emb-info-box {
+    background: var(--solus-gray-50);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.solus-emb-info-box svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.solus-emb-info-box p {
+    font-size: 11px;
+    color: var(--solus-charcoal);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Custom Design Intro */
+.solus-emb-custom-intro {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--solus-gray-600);
+    margin: 0 0 32px;
+}
+
+.solus-emb-custom-note {
+    background: var(--solus-black);
+    color: var(--solus-white);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.solus-emb-custom-note p {
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Configuration Summary */
+.solus-emb-summary {
+    border: 2px solid var(--solus-black) !important;
+}
+
+.solus-emb-summary__title {
+    font-family: var(--font-playfair);
+    font-size: 24px;
+    margin: 0 0 24px;
+}
+
+.solus-emb-summary__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.solus-emb-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.solus-emb-summary-item__label {
+    color: var(--solus-gray-600);
+}
+
+.solus-emb-summary-item__value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Price Summary */
+.solus-emb-price-summary {
+    background: var(--solus-off-white);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.solus-emb-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.solus-emb-price-row span:first-child {
+    color: var(--solus-gray-600);
+}
+
+.solus-emb-price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 2px solid var(--solus-black);
+}
+
+.solus-emb-price-total span:first-child {
+    font-family: var(--font-playfair);
+    font-size: 20px;
+}
+
+.solus-emb-price-total span:last-child {
+    font-family: var(--font-playfair);
+    font-size: 28px;
+}
+
+/* Add to Cart Button */
+.solus-emb-add-to-cart,
+.solus-emb-whatsapp-btn {
+    width: 100%;
+    background: var(--solus-black);
+    color: var(--solus-white);
+    padding: 20px;
+    border: none;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.solus-emb-add-to-cart:hover:not(:disabled),
+.solus-emb-whatsapp-btn:hover {
+    background: var(--solus-charcoal);
+}
+
+.solus-emb-add-to-cart:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.solus-emb-whatsapp-btn {
+    background: #25D366;
+    margin-top: 12px;
+}
+
+.solus-emb-whatsapp-btn:hover {
+    background: #22c55e;
+}
+
+/* Note */
+.solus-emb-note {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--solus-gray-400);
+    line-height: 1.6;
+}
+
+/* Error State */
+.solus-emb-error {
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.solus-emb-error p {
+    font-size: 16px;
+    color: var(--solus-gray-600);
+}
+
+.solus-emb-error a {
+    color: var(--solus-black);
+    text-decoration: underline;
+}
+
+/* Loading Spinner (optional) */
+.solus-emb-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
