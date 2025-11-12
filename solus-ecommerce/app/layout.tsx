@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
+import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -30,9 +33,14 @@ export default async function RootLayout({
 
   return (
     <html lang="ro">
-      <body className={`${playfair.variable} ${inter.variable} font-sans`}>
+      <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <Header />
+          <main className="min-h-screen pt-20">
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
         </NextIntlClientProvider>
       </body>
     </html>
