@@ -63,7 +63,7 @@ model Product {
   slug            String            @unique
   description     String?
   descriptionRo   String?           // Romanian description
-  basePrice       Decimal           @db.Decimal(10, 2)
+  basePrice       Float
   categoryId      String
   category        Category          @relation(fields: [categoryId], references: [id])
 
@@ -115,7 +115,7 @@ model ProductVariant {
   name       String   // e.g., "Small", "Large", "Black"
   nameRo     String   // Romanian name
   sku        String   @unique
-  price      Decimal? @db.Decimal(10, 2) // Override base price if set
+  price      Float? // Override base price if set
   stock      Int      @default(0)
 
   createdAt  DateTime @default(now())
@@ -135,7 +135,7 @@ model CartItem {
   quantity   Int      @default(1)
 
   // Custom options (JSONB for flexibility)
-  customization Json?  // { embroideryText, color, etc. }
+  customization String?  // { embroideryText, color, etc. }
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -195,16 +195,16 @@ model Order {
   status          OrderStatus   @default(PENDING)
 
   // Pricing
-  subtotal        Decimal       @db.Decimal(10, 2)
-  shippingCost    Decimal       @db.Decimal(10, 2)
-  tax             Decimal       @db.Decimal(10, 2) @default(0)
-  discount        Decimal       @db.Decimal(10, 2) @default(0)
-  total           Decimal       @db.Decimal(10, 2)
+  subtotal        Float
+  shippingCost    Float
+  tax             Float @default(0)
+  discount        Float @default(0)
+  total           Float
 
   // Gift options
   giftWrapping    String?       // 'standard', 'premium', or null
   customLetter    Boolean       @default(false)
-  letterDetails   Json?
+  letterDetails   String?
   expressShipping Boolean       @default(false)
 
   // Relations
@@ -251,10 +251,10 @@ model OrderItem {
   productNameRo String
   variantName   String?
   variantNameRo String?
-  price         Decimal  @db.Decimal(10, 2)
+  price         Float
   quantity      Int
 
-  customization Json?    // Custom options snapshot
+  customization String?    // Custom options snapshot
 
   createdAt     DateTime @default(now())
 
@@ -289,8 +289,8 @@ model DiscountCode {
   description   String?
   descriptionRo String?      // Romanian description
   type          DiscountType
-  amount        Decimal      @db.Decimal(10, 2)
-  minPurchase   Decimal?     @db.Decimal(10, 2)
+  amount        Float
+  minPurchase   Float?
   maxUses       Int?
   usedCount     Int          @default(0)
   active        Boolean      @default(true)
