@@ -2,19 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { CreditCard, Banknote, Gift, Sparkles, Mail } from 'lucide-react'
 import { useCartStore } from '@/stores/cart'
-import { formatCurrency, generateOrderNumber } from '@/lib/utils'
-import { CreditCard, Banknote } from 'lucide-react'
 
 export default function CheckoutPage() {
-  const t = useTranslations()
   const router = useRouter()
-  const { items, getTotalPrice, clearCart } = useCartStore()
-  const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'COD'>('COD')
+  const { items, getTotalPrice } = useCartStore()
+
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod'>('cod')
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -26,20 +21,33 @@ export default function CheckoutPage() {
     phone: '',
   })
 
+  const [giftWrapping, setGiftWrapping] = useState<'none' | 'standard' | 'premium'>('none')
+  const [wrappingColor, setWrappingColor] = useState<'black' | 'white'>('black')
+  const [customLetter, setCustomLetter] = useState(false)
+  const [letterPaper, setLetterPaper] = useState<'white' | 'black'>('white')
+  const [letterDetails, setLetterDetails] = useState({
+    recipientName: '',
+    occasion: '',
+    message: '',
+    senderName: '',
+  })
+  const [expressShipping, setExpressShipping] = useState(false)
+
   const subtotal = getTotalPrice()
   const shipping = subtotal >= 200 ? 0 : 25
-  const total = subtotal + shipping
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const wrappingPrice = giftWrapping === 'standard' ? 50 : giftWrapping === 'premium' ? 120 : 0
+  const letterBasePrice = customLetter ? 85 : 0
+  const letterPaperPremium = customLetter && letterPaper === 'black' ? 35 : 0
+  const letterPrice = letterBasePrice + letterPaperPremium
+  const expressPrice = expressShipping ? 200 : 0
+
+  const upsellTotal = wrappingPrice + letterPrice + expressPrice
+  const total = subtotal + shipping + upsellTotal
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Mock order creation
-    const orderNumber = generateOrderNumber()
-    console.log('Order created:', { orderNumber, ...formData, paymentMethod, items })
-
-    // Clear cart and redirect
-    clearCart()
-    alert(`✅ Comanda ${orderNumber} a fost plasată cu succes!\n\nMultumim pentru comandă!`)
+    alert(`Order placed successfully! Total: ${total} RON (${paymentMethod === 'cod' ? 'Cash on Delivery' : 'Card Payment'})`)
     router.push('/')
   }
 
@@ -51,201 +59,270 @@ export default function CheckoutPage() {
   }
 
   if (items.length === 0) {
-    router.push('/cart')
-    return null
+    return (
+      <div className="min-h-screen bg-[#faf8f5] pt-32 pb-20">
+        <div className="max-w-[1400px] mx-auto px-8 lg:px-16 text-center">
+          <h1 className="font-playfair mb-8" style={{ fontSize: 'clamp(32px, 6vw, 48px)', fontWeight: 700 }}>
+            Your cart is empty
+          </h1>
+          <button
+            onClick={() => router.push('/collections')}
+            className="bg-[#c9a66b] text-black px-12 py-4 tracking-luxury hover:bg-[#b89559] transition-colors"
+            style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.08em' }}
+          >
+            CONTINUE SHOPPING
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <h1 className="font-playfair text-4xl font-bold tracking-luxury mb-8">
-          {t('checkout.title')}
-        </h1>
+    <div className="min-h-screen bg-[#faf8f5] pt-32 pb-20">
+      <div className="max-w-[1400px] mx-auto px-8 lg:px-16">
+        <div className="text-center mb-16">
+          <h1
+            className="font-playfair tracking-luxury"
+            style={{ fontSize: 'clamp(32px, 6vw, 48px)', fontWeight: 700, color: '#000000', letterSpacing: '0.05em' }}
+          >
+            Checkout
+          </h1>
+        </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Checkout Form */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Shipping Info */}
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h2 className="text-xl font-semibold mb-6">{t('checkout.shippingInfo')}</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <div className="lg:col-span-2 order-2 lg:order-1">
+              <div className="bg-white p-8 border border-black/10 sticky top-32">
+                <h2 className="mb-6" style={{ fontSize: '20px', fontWeight: 600, color: '#2a2a2a' }}>
+                  Order Summary
+                </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email">{t('checkout.email')}</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder={t('checkout.emailPlaceholder')}
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">{t('checkout.phone')}</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder={t('checkout.phonePlaceholder')}
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="firstName">{t('checkout.firstName')}</Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      placeholder={t('checkout.firstNamePlaceholder')}
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">{t('checkout.lastName')}</Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      placeholder={t('checkout.lastNamePlaceholder')}
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="address">{t('checkout.address')}</Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      placeholder={t('checkout.addressPlaceholder')}
-                      value={formData.address}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="city">{t('checkout.city')}</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      placeholder={t('checkout.cityPlaceholder')}
-                      value={formData.city}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="county">{t('checkout.county')}</Label>
-                    <Input
-                      id="county"
-                      name="county"
-                      placeholder={t('checkout.countyPlaceholder')}
-                      value={formData.county}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="postalCode">{t('checkout.postalCode')}</Label>
-                    <Input
-                      id="postalCode"
-                      name="postalCode"
-                      placeholder={t('checkout.postalCodePlaceholder')}
-                      value={formData.postalCode}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment Method */}
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h2 className="text-xl font-semibold mb-6">{t('checkout.paymentMethod')}</h2>
-
-                <div className="space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('COD')}
-                    className={`w-full p-4 border-2 rounded-lg flex items-center gap-4 transition-colors ${
-                      paymentMethod === 'COD' ? 'border-black bg-black/5' : 'border-gray-200'
-                    }`}
-                  >
-                    <Banknote className="w-6 h-6" />
-                    <div className="text-left">
-                      <p className="font-semibold">{t('payment.cod')}</p>
-                      <p className="text-sm text-gray-600">Plătește la livrare</p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('CARD')}
-                    className={`w-full p-4 border-2 rounded-lg flex items-center gap-4 transition-colors ${
-                      paymentMethod === 'CARD' ? 'border-black bg-black/5' : 'border-gray-200'
-                    }`}
-                  >
-                    <CreditCard className="w-6 h-6" />
-                    <div className="text-left">
-                      <p className="font-semibold">{t('payment.card')}</p>
-                      <p className="text-sm text-gray-600">Stripe - Plată securizată</p>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg p-6 shadow-sm sticky top-24">
-                <h2 className="text-xl font-semibold mb-6">{t('checkout.orderSummary')}</h2>
-
-                {/* Items */}
-                <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
+                <div className="space-y-6 mb-8">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <span className="flex-1">
-                        {item.productNameRo} × {item.quantity}
-                      </span>
-                      <span className="font-medium">{formatCurrency(item.price * item.quantity)}</span>
+                    <div key={item.id} className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p style={{ fontSize: '14px', fontWeight: 500, color: '#2a2a2a' }}>
+                          {item.name}
+                        </p>
+                        <p style={{ fontSize: '13px', fontWeight: 300, color: '#666' }}>
+                          Qty: {item.quantity}
+                        </p>
+                      </div>
+                      <p style={{ fontSize: '14px', fontWeight: 600, color: '#c9a66b' }}>
+                        {item.price * item.quantity} RON
+                      </p>
                     </div>
                   ))}
                 </div>
 
-                {/* Totals */}
-                <div className="space-y-3 border-t pt-4 mb-6">
+                <div className="border-t border-black/10 pt-6 space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('checkout.subtotal')}</span>
-                    <span className="font-medium">{formatCurrency(subtotal)}</span>
+                    <span style={{ fontSize: '14px', fontWeight: 300, color: '#2a2a2a' }}>Subtotal</span>
+                    <span style={{ fontSize: '14px', fontWeight: 400, color: '#2a2a2a' }}>{subtotal} RON</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('checkout.shipping')}</span>
-                    <span className="font-medium">
-                      {shipping === 0 ? t('common.freeShipping') : formatCurrency(shipping)}
+                    <span style={{ fontSize: '14px', fontWeight: 300, color: '#2a2a2a' }}>Shipping</span>
+                    <span style={{ fontSize: '14px', fontWeight: 400, color: shipping === 0 ? '#c9a66b' : '#2a2a2a' }}>
+                      {shipping === 0 ? 'FREE' : `${shipping} RON`}
                     </span>
                   </div>
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between text-lg font-bold">
-                      <span>{t('common.total')}</span>
-                      <span>{formatCurrency(total)}</span>
+
+                  {wrappingPrice > 0 && (
+                    <div className="flex justify-between">
+                      <span style={{ fontSize: '14px', fontWeight: 300, color: '#2a2a2a' }}>
+                        {giftWrapping === 'premium' ? 'Premium' : 'Standard'} Gift Wrapping ({wrappingColor})
+                      </span>
+                      <span style={{ fontSize: '14px', fontWeight: 400, color: '#2a2a2a' }}>{wrappingPrice} RON</span>
                     </div>
+                  )}
+                  {letterPrice > 0 && (
+                    <div className="flex justify-between">
+                      <span style={{ fontSize: '14px', fontWeight: 300, color: '#2a2a2a' }}>Custom Handwritten Letter</span>
+                      <span style={{ fontSize: '14px', fontWeight: 400, color: '#2a2a2a' }}>{letterPrice} RON</span>
+                    </div>
+                  )}
+                  {expressPrice > 0 && (
+                    <div className="flex justify-between">
+                      <span style={{ fontSize: '14px', fontWeight: 300, color: '#2a2a2a' }}>Express Shipping</span>
+                      <span style={{ fontSize: '14px', fontWeight: 400, color: '#2a2a2a' }}>{expressPrice} RON</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between pt-3 border-t border-black/10">
+                    <span className="tracking-luxury" style={{ fontSize: '16px', fontWeight: 600, color: '#000000', letterSpacing: '0.05em' }}>
+                      TOTAL
+                    </span>
+                    <span className="font-playfair" style={{ fontSize: '24px', fontWeight: 600, color: '#c9a66b' }}>
+                      {total} RON
+                    </span>
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  {t('checkout.placeOrder')}
-                </Button>
+                {shipping > 0 && (
+                  <div className="mt-6 p-4 bg-[#c9a66b]/10 border border-[#c9a66b]/30">
+                    <p style={{ fontSize: '12px', fontWeight: 400, color: '#2a2a2a' }}>
+                      Add {200 - subtotal} RON more to qualify for free shipping
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
 
-                <p className="text-xs text-center text-gray-500 mt-4">
-                  Prin plasarea comenzii, accept{' '}
-                  <a href="/terms" className="underline">
-                    termenii și condițiile
-                  </a>
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              <div className="bg-black text-white p-8 lg:p-12">
+                <div className="mb-10">
+                  <h2 className="mb-6" style={{ fontSize: '20px', fontWeight: 600 }}>
+                    Contact Information
+                  </h2>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email address"
+                    required
+                    className="w-full bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                    style={{ fontSize: '14px', fontWeight: 300 }}
+                  />
+                </div>
+
+                <div className="mb-10">
+                  <h2 className="mb-6" style={{ fontSize: '20px', fontWeight: 600 }}>
+                    Shipping Address
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="First name"
+                      required
+                      className="bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                      style={{ fontSize: '14px', fontWeight: 300 }}
+                    />
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Last name"
+                      required
+                      className="bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                      style={{ fontSize: '14px', fontWeight: 300 }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Street address"
+                    required
+                    className="w-full bg-white/10 border border-white/20 px-6 py-4 mb-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                    style={{ fontSize: '14px', fontWeight: 300 }}
+                  />
+                  <div className="grid grid-cols-3 gap-4 mb-4">
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      placeholder="City"
+                      required
+                      className="bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                      style={{ fontSize: '14px', fontWeight: 300 }}
+                    />
+                    <input
+                      type="text"
+                      name="county"
+                      value={formData.county}
+                      onChange={handleChange}
+                      placeholder="County"
+                      required
+                      className="bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                      style={{ fontSize: '14px', fontWeight: 300 }}
+                    />
+                    <input
+                      type="text"
+                      name="postalCode"
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                      placeholder="Postal code"
+                      required
+                      className="bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                      style={{ fontSize: '14px', fontWeight: 300 }}
+                    />
+                  </div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Phone number"
+                    required
+                    className="w-full bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#c9a66b] transition-colors"
+                    style={{ fontSize: '14px', fontWeight: 300 }}
+                  />
+                </div>
+
+                <div className="mb-10">
+                  <h2 className="mb-6" style={{ fontSize: '20px', fontWeight: 600 }}>
+                    Payment Method
+                  </h2>
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('cod')}
+                      className={`w-full p-6 border-2 transition-colors text-left ${
+                        paymentMethod === 'cod'
+                          ? 'border-[#c9a66b] bg-[#c9a66b]/10'
+                          : 'border-white/20 hover:border-white/40'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <Banknote className="w-6 h-6 text-[#c9a66b]" />
+                        <div>
+                          <p style={{ fontSize: '15px', fontWeight: 600 }}>Cash on Delivery</p>
+                          <p style={{ fontSize: '13px', fontWeight: 300, color: '#c9a66b' }}>
+                            Pay when you receive your order
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('card')}
+                      className={`w-full p-6 border-2 transition-colors text-left ${
+                        paymentMethod === 'card'
+                          ? 'border-[#c9a66b] bg-[#c9a66b]/10'
+                          : 'border-white/20 hover:border-white/40'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <CreditCard className="w-6 h-6 text-[#c9a66b]" />
+                        <div>
+                          <p style={{ fontSize: '15px', fontWeight: 600 }}>Card Payment</p>
+                          <p style={{ fontSize: '13px', fontWeight: 300, color: '#c9a66b' }}>
+                            Secure online payment
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#c9a66b] text-black py-5 tracking-luxury hover:bg-[#b89559] transition-colors"
+                  style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.1em' }}
+                >
+                  CONFIRM & PLACE ORDER
+                </button>
+
+                <p className="mt-6 text-center" style={{ fontSize: '12px', fontWeight: 300, color: '#c9a66b' }}>
+                  By placing your order, you agree to our Terms of Service
                 </p>
               </div>
             </div>
