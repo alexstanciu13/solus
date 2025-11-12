@@ -40,36 +40,42 @@ function solus_emb_get_products() {
             'name' => 'Hanorac',
             'description' => 'Bumbac premium heavyweight',
             'type' => 'clothing',
+            'fallback_image' => 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800',
         ],
         'pulover' => [
             'id' => 183,
             'name' => 'Pulover',
             'description' => 'Lână merino luxoasă',
             'type' => 'clothing',
+            'fallback_image' => 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800',
         ],
         'beanie' => [
             'id' => 184,
             'name' => 'Beanie',
             'description' => 'Amestec cașmir moale',
             'type' => 'hat',
+            'fallback_image' => 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=800',
         ],
         'sapca' => [
             'id' => 185,
             'name' => 'Șapcă',
             'description' => 'Bumbac twill structurat',
             'type' => 'hat',
+            'fallback_image' => 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=800',
         ],
         'camasa' => [
             'id' => 186,
             'name' => 'Cămașă',
             'description' => 'Bumbac poplin italian',
             'type' => 'clothing',
+            'fallback_image' => 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800',
         ],
         'pantaloni' => [
             'id' => 187,
             'name' => 'Pantaloni',
             'description' => 'Amestec lână croială',
             'type' => 'clothing',
+            'fallback_image' => 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800',
         ],
     ];
 }
@@ -175,8 +181,9 @@ add_shortcode('solus_custom_embroidery', function($atts) {
         $product = wc_get_product($data['id']);
         if (!$product) continue;
 
+        // Use WooCommerce featured image if set, otherwise use Figma/Unsplash fallback image
         $image_id = $product->get_image_id();
-        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : wc_placeholder_img_src('full');
+        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : $data['fallback_image'];
 
         $products_json[$slug] = [
             'id' => $data['id'],
@@ -1257,8 +1264,9 @@ add_shortcode('solus_custom_embroidery', function($atts) {
                 $product = wc_get_product($data['id']);
                 if (!$product) continue;
 
+                // Use WooCommerce featured image if set, otherwise use Figma/Unsplash fallback image
                 $image_id = $product->get_image_id();
-                $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'large') : wc_placeholder_img_src('large');
+                $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'large') : $data['fallback_image'];
                 $price = $product->get_price();
             ?>
             <div class="solus-product-card" data-product="<?php echo esc_attr($slug); ?>">
