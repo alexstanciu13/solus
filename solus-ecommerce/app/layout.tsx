@@ -36,7 +36,7 @@ export default async function RootLayout({
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Header />
-          <main className="min-h-screen pt-20">
+          <main className="min-h-screen">
             {children}
           </main>
           <Footer />
