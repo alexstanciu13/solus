@@ -1,166 +1,155 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
+import { Star, Truck, Shield, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/stores/cart'
-import { formatCurrency } from '@/lib/utils'
-import { ShoppingBag, Heart, Share2, ChevronLeft } from 'lucide-react'
-import { toast } from 'sonner'
 
-// Mock product data
-const mockProduct = {
-  id: '1',
-  slug: 'inel-heritage-signet',
-  nameRo: 'Inel Heritage Signet',
-  descriptionRo:
-    'Inel sigiliu clasic cu motive tradiționale românești, realizat manual din argint 925. Fiecare piesă este unică și poartă amprenta meșterului artiz an. Designul combină eleganța clasică cu elemente inspirate din arta populară românească.',
-  basePrice: 1250,
-  images: [
-    { url: '/products/ring-1.jpg', altTextRo: 'Inel Heritage Signet' },
-    { url: '/products/ring-1-2.jpg', altTextRo: 'Detaliu inel' },
-  ],
-  featured: true,
-  inStock: true,
-  categoryRo: 'Inele',
-}
-
-export default function ProductDetailPage() {
-  const params = useParams()
-  const t = useTranslations()
-  const { addItem } = useCartStore()
+export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const [selectedImage, setSelectedImage] = useState(0)
-  const [quantity, setQuantity] = useState(1)
+  const [addEmbroidery, setAddEmbroidery] = useState(false)
+  const { addItem } = useCartStore()
+
+  const product = {
+    id: params.slug,
+    name: 'Inel Heritage Signet',
+    price: 1250,
+    stock: 2,
+    description: 'Realizat meticulos din argint sterling placat cu aur 18k. Această piesă heritage întruchipează eleganța atemporală cu rafinament contemporan.',
+    images: [
+      'https://images.unsplash.com/photo-1708221269975-cc31682c7fc4?w=1080',
+      'https://images.unsplash.com/photo-1758362197676-228703a17e69?w=1080',
+      'https://images.unsplash.com/photo-1619525673983-81151d6cc193?w=1080',
+    ],
+    reviews: [
+      { name: 'Alexandru M.', rating: 5, comment: 'Meșteșug excepțional. Atenția la detalii este remarcabilă.' },
+      { name: 'Cristian D.', rating: 5, comment: 'O piesă cu adevărat statement. Lux care vorbește de la sine.' },
+    ],
+  }
 
   const handleAddToCart = () => {
     addItem({
-      productId: mockProduct.id,
-      productName: mockProduct.nameRo,
-      productNameRo: mockProduct.nameRo,
-      price: mockProduct.basePrice,
-      quantity,
-      image: mockProduct.images[0].url,
+      productId: product.id,
+      productName: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.images[0],
     })
-    toast.success(t('products.addedToCart'))
+    alert('Adăugat în coș!')
   }
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        {/* Breadcrumb */}
-        <div className="mb-8">
-          <Link href="/collections" className="inline-flex items-center text-gray-600 hover:text-black transition-colors">
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            {t('common.backToHome')}
+    <div className="min-h-screen bg-[#faf8f5] pt-32 pb-20">
+      <div className="max-w-[1800px] mx-auto px-8 lg:px-16">
+        <div className="flex items-center gap-2 mb-12">
+          <Link href="/" className="hover:text-[#c9a66b] transition-colors" style={{ fontSize: '12px', fontWeight: 400, color: '#2a2a2a' }}>
+            Acasă
           </Link>
+          <ChevronRight className="w-3 h-3 text-[#2a2a2a]" />
+          <Link href="/collections" className="hover:text-[#c9a66b] transition-colors" style={{ fontSize: '12px', fontWeight: 400, color: '#2a2a2a' }}>
+            Colecții
+          </Link>
+          <ChevronRight className="w-3 h-3 text-[#2a2a2a]" />
+          <span style={{ fontSize: '12px', fontWeight: 400, color: '#c9a66b' }}>{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Image Gallery */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
-            <div className="relative aspect-square bg-white rounded-lg overflow-hidden mb-4">
-              <Image
-                src={mockProduct.images[selectedImage].url}
-                alt={mockProduct.images[selectedImage].altTextRo || mockProduct.nameRo}
-                fill
-                className="object-cover"
-                priority
-              />
-              {mockProduct.featured && (
-                <Badge className="absolute top-4 left-4">Recomandat</Badge>
-              )}
-            </div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="relative aspect-square mb-6 bg-white">
+              <ImageWithFallback src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+            </motion.div>
 
-            <div className="grid grid-cols-4 gap-4">
-              {mockProduct.images.map((image, index) => (
+            <div className="grid grid-cols-3 gap-4">
+              {product.images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative aspect-square bg-white rounded-lg overflow-hidden border-2 transition-colors ${
-                    selectedImage === index ? 'border-black' : 'border-transparent'
-                  }`}
+                  className={`aspect-square bg-white border-2 transition-colors ${selectedImage === index ? 'border-[#c9a66b]' : 'border-transparent hover:border-black/20'}`}
                 >
-                  <Image src={image.url} alt={image.altTextRo || ''} fill className="object-cover" />
+                  <ImageWithFallback src={image} alt={`Imagine ${index + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Product Info */}
           <div>
             <div className="mb-6">
-              <p className="text-sm text-gray-600 mb-2">{mockProduct.categoryRo}</p>
-              <h1 className="font-playfair text-4xl font-bold tracking-luxury mb-4">
-                {mockProduct.nameRo}
+              <span className="tracking-luxury inline-block mb-4" style={{ fontSize: '11px', fontWeight: 600, color: '#c9a66b', letterSpacing: '0.15em' }}>
+                SOLUS EDIȚIE LIMITATĂ
+              </span>
+              <h1 className="font-playfair mb-4" style={{ fontSize: '42px', fontWeight: 600, color: '#000000' }}>
+                {product.name}
               </h1>
-              <p className="text-3xl font-bold">{formatCurrency(mockProduct.basePrice)}</p>
-            </div>
+              <p className="mb-6" style={{ fontSize: '32px', fontWeight: 600, color: '#c9a66b' }}>
+                {product.price.toLocaleString('ro-RO')} RON
+              </p>
 
-            <div className="mb-8">
-              <p className="text-gray-700 leading-relaxed">{mockProduct.descriptionRo}</p>
-            </div>
-
-            {/* Quantity Selector */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">{t('common.quantity')}</label>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                >
-                  -
-                </Button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-                  +
-                </Button>
+              <div className="inline-block bg-black px-6 py-3 mb-8">
+                <motion.span animate={{ opacity: [1, 0.6, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ fontSize: '12px', fontWeight: 600, color: '#c9a66b', letterSpacing: '0.1em' }}>
+                  DOAR {product.stock} {product.stock > 1 ? 'PIESE' : 'PIESĂ'} RĂMAS
+                </motion.span>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="space-y-3 mb-8">
-              <Button size="lg" className="w-full" onClick={handleAddToCart}>
-                <ShoppingBag className="mr-2 w-5 h-5" />
-                {t('common.addToCart')}
-              </Button>
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" size="lg" className="w-full">
-                  <Heart className="mr-2 w-5 h-5" />
-                  Favorite
-                </Button>
-                <Button variant="outline" size="lg" className="w-full">
-                  <Share2 className="mr-2 w-5 h-5" />
-                  Distribuie
-                </Button>
+            <p className="mb-10" style={{ fontSize: '15px', fontWeight: 300, color: '#2a2a2a', lineHeight: '1.8' }}>
+              {product.description}
+            </p>
+
+            <div className="mb-10 p-6 border border-black/10">
+              <div className="flex items-center justify-between mb-4">
+                <span style={{ fontSize: '14px', fontWeight: 500, color: '#2a2a2a' }}>Adaugă Broderie Personalizată</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked={addEmbroidery} onChange={(e) => setAddEmbroidery(e.target.checked)} className="sr-only peer" />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#c9a66b]"></div>
+                </label>
+              </div>
+              {addEmbroidery && (
+                <Link href="/custom-embroidery" className="text-[#c9a66b] hover:underline" style={{ fontSize: '13px', fontWeight: 400 }}>
+                  Configurează broderia →
+                </Link>
+              )}
+            </div>
+
+            <button onClick={handleAddToCart} className="w-full bg-[#c9a66b] text-black py-5 tracking-luxury hover:bg-[#b89559] transition-colors mb-8" style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.1em' }}>
+              ADAUGĂ ÎN COȘ
+            </button>
+
+            <div className="space-y-4 mb-10">
+              <div className="flex items-start gap-3">
+                <Truck className="w-5 h-5 text-[#c9a66b] mt-1" />
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 500, color: '#2a2a2a' }}>Transport gratuit peste 200 RON</p>
+                  <p style={{ fontSize: '12px', fontWeight: 300, color: '#666' }}>Livrare express 24h disponibilă</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Shield className="w-5 h-5 text-[#c9a66b] mt-1" />
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 500, color: '#2a2a2a' }}>Garanție pe viață</p>
+                  <p style={{ fontSize: '12px', fontWeight: 300, color: '#666' }}>Meșteșug garantat</p>
+                </div>
               </div>
             </div>
 
-            {/* Product Details */}
-            <div className="border-t border-black/10 pt-6">
-              <h3 className="font-semibold mb-4">{t('products.productDetails')}</h3>
-              <dl className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">Material:</dt>
-                  <dd className="font-medium">Argint 925</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">Fabricație:</dt>
-                  <dd className="font-medium">Handmade în România</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">Transport:</dt>
-                  <dd className="font-medium">Gratuit peste 200 RON</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">Livrare:</dt>
-                  <dd className="font-medium">2-3 zile lucrătoare</dd>
-                </div>
-              </dl>
+            <div className="border-t border-black/10 pt-10">
+              <h3 className="mb-6" style={{ fontSize: '18px', fontWeight: 600, color: '#2a2a2a' }}>Recenzii Clienți</h3>
+              <div className="space-y-6">
+                {product.reviews.map((review, index) => (
+                  <div key={index} className="pb-6 border-b border-black/5 last:border-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex">
+                        {[...Array(review.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-[#c9a66b] text-[#c9a66b]" />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '13px', fontWeight: 500, color: '#2a2a2a' }}>{review.name}</span>
+                    </div>
+                    <p style={{ fontSize: '13px', fontWeight: 300, color: '#666', lineHeight: '1.6' }}>{review.comment}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
