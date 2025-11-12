@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { AnimatedLogo } from '@/components/home/AnimatedLogo'
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
 
@@ -35,8 +36,9 @@ export default async function RootLayout({
     <html lang="ro">
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
+          <AnimatedLogo />
           <Header />
-          <main className="min-h-screen pt-20">
+          <main className="min-h-screen">
             {children}
           </main>
           <Footer />
