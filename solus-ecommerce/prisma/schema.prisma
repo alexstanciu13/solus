@@ -1,0 +1,309 @@
+// Solus E-commerce Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  firstName     String?
+  lastName      String?
+  phone         String?
+  role          Role      @default(CUSTOMER)
+  emailVerified DateTime?
+  image         String?
+
+  // Relations
+  orders        Order[]
+  cartItems     CartItem[]
+  addresses     Address[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model Category {
+  id            String      @id @default(cuid())
+  name          String
+  nameRo        String      // Romanian name
+  slug          String      @unique
+  description   String?
+  descriptionRo String?     // Romanian description
+  image         String?
+  parentId      String?
+  parent        Category?   @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children      Category[]  @relation("CategoryHierarchy")
+  products      Product[]
+  sortOrder     Int         @default(0)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([slug])
+}
+
+model Product {
+  id              String            @id @default(cuid())
+  name            String
+  nameRo          String            // Romanian name
+  slug            String            @unique
+  description     String?
+  descriptionRo   String?           // Romanian description
+  basePrice       Decimal           @db.Decimal(10, 2)
+  categoryId      String
+  category        Category          @relation(fields: [categoryId], references: [id])
+
+  // Flags
+  featured        Boolean           @default(false)
+  limitedDrop     Boolean           @default(false)
+  customEmbroidery Boolean          @default(false)
+  inStock         Boolean           @default(true)
+
+  // SEO
+  metaTitle       String?
+  metaTitleRo     String?
+  metaDescription String?
+  metaDescriptionRo String?
+
+  // Relations
+  images          ProductImage[]
+  variants        ProductVariant[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([limitedDrop])
+}
+
+model ProductImage {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url        String
+  altText    String?
+  altTextRo  String?  // Romanian alt text
+  sortOrder  Int      @default(0)
+
+  createdAt  DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String   // e.g., "Small", "Large", "Black"
+  nameRo     String   // Romanian name
+  sku        String   @unique
+  price      Decimal? @db.Decimal(10, 2) // Override base price if set
+  stock      Int      @default(0)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([productId])
+  @@index([sku])
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  userId     String?
+  sessionId  String?  // For guest users
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId  String?
+  quantity   Int      @default(1)
+
+  // Custom options (JSONB for flexibility)
+  customization Json?  // { embroideryText, color, etc. }
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([productId])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName  String
+  lastName   String
+  address    String
+  city       String
+  county     String   // Județ in Romanian
+  postalCode String
+  phone      String
+
+  isDefault  Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+
+  // Customer info (snapshot at order time)
+  email           String
+  firstName       String
+  lastName        String
+  phone           String
+
+  // Shipping address
+  shippingAddress String
+  city            String
+  county          String
+  postalCode      String
+
+  // Payment
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  stripePaymentId String?
+
+  // Order status
+  status          OrderStatus   @default(PENDING)
+
+  // Pricing
+  subtotal        Decimal       @db.Decimal(10, 2)
+  shippingCost    Decimal       @db.Decimal(10, 2)
+  tax             Decimal       @db.Decimal(10, 2) @default(0)
+  discount        Decimal       @db.Decimal(10, 2) @default(0)
+  total           Decimal       @db.Decimal(10, 2)
+
+  // Gift options
+  giftWrapping    String?       // 'standard', 'premium', or null
+  customLetter    Boolean       @default(false)
+  letterDetails   Json?
+  expressShipping Boolean       @default(false)
+
+  // Relations
+  items           OrderItem[]
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([email])
+  @@index([status])
+}
+
+enum PaymentMethod {
+  CARD
+  COD  // Cash on delivery
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+
+  // Snapshot at order time
+  productName   String
+  productNameRo String
+  variantName   String?
+  variantNameRo String?
+  price         Decimal  @db.Decimal(10, 2)
+  quantity      Int
+
+  customization Json?    // Custom options snapshot
+
+  createdAt     DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Story {
+  id          String   @id @default(cuid())
+  title       String
+  titleRo     String   // Romanian title
+  slug        String   @unique
+  excerpt     String?
+  excerptRo   String?  // Romanian excerpt
+  content     String   // Markdown or HTML
+  contentRo   String   // Romanian content
+  coverImage  String
+  author      String
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([published])
+}
+
+model DiscountCode {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  description   String?
+  descriptionRo String?      // Romanian description
+  type          DiscountType
+  amount        Decimal      @db.Decimal(10, 2)
+  minPurchase   Decimal?     @db.Decimal(10, 2)
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  active        Boolean      @default(true)
+  expiresAt     DateTime?
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([code])
+  @@index([active])
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
