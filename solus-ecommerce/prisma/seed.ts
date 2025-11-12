@@ -278,50 +278,63 @@ async function main() {
   console.log('✅ Discount codes created')
 
   // Create Sample Order
-  const order = await prisma.order.create({
-    data: {
-      orderNumber: 'ORD-2025-001',
-      userId: customer.id,
-      email: customer.email,
-      firstName: customer.firstName!,
-      lastName: customer.lastName!,
-      phone: customer.phone!,
-      shippingAddress: 'Str. Exemplu nr. 123',
-      city: 'București',
-      county: 'București',
-      postalCode: '010101',
-      paymentMethod: 'COD',
-      paymentStatus: 'PENDING',
-      status: 'PENDING',
-      subtotal: 2140,
-      shippingCost: 0,
-      tax: 0,
-      discount: 0,
-      total: 2140,
-    },
+  // First, fetch the created products by their slugs
+  const firstProduct = await prisma.product.findUnique({
+    where: { slug: 'inel-heritage-signet' }
   })
 
-  await prisma.orderItem.createMany({
-    data: [
-      {
-        orderId: order.id,
-        productId: products[0].slug,
-        productName: products[0].name,
-        productNameRo: products[0].nameRo,
-        price: products[0].basePrice,
-        quantity: 1,
-      },
-      {
-        orderId: order.id,
-        productId: products[3].slug,
-        productName: products[3].name,
-        productNameRo: products[3].nameRo,
-        price: products[3].basePrice,
-        quantity: 1,
-      },
-    ],
+  const secondProduct = await prisma.product.findUnique({
+    where: { slug: 'cercei-eleganti' }
   })
-  console.log('✅ Sample order created')
+
+  if (firstProduct && secondProduct) {
+    const order = await prisma.order.create({
+      data: {
+        orderNumber: 'ORD-2025-001',
+        userId: customer.id,
+        email: customer.email,
+        firstName: customer.firstName!,
+        lastName: customer.lastName!,
+        phone: customer.phone!,
+        shippingAddress: 'Str. Exemplu nr. 123',
+        city: 'București',
+        county: 'București',
+        postalCode: '010101',
+        paymentMethod: 'COD',
+        paymentStatus: 'PENDING',
+        status: 'PENDING',
+        subtotal: firstProduct.basePrice + secondProduct.basePrice,
+        shippingCost: 0,
+        tax: 0,
+        discount: 0,
+        total: firstProduct.basePrice + secondProduct.basePrice,
+      },
+    })
+
+    await prisma.orderItem.createMany({
+      data: [
+        {
+          orderId: order.id,
+          productId: firstProduct.id,
+          productName: firstProduct.name,
+          productNameRo: firstProduct.nameRo,
+          price: firstProduct.basePrice,
+          quantity: 1,
+        },
+        {
+          orderId: order.id,
+          productId: secondProduct.id,
+          productName: secondProduct.name,
+          productNameRo: secondProduct.nameRo,
+          price: secondProduct.basePrice,
+          quantity: 1,
+        },
+      ],
+    })
+    console.log('✅ Sample order created')
+  } else {
+    console.log('⚠️  Sample order skipped (products not found)')
+  }
 
   console.log('🎉 Database seeding complete!')
   console.log('\n📧 Login credentials:')
