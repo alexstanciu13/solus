@@ -1,125 +1,58 @@
-import { getTranslations } from 'next-intl/server'
-import { ProductCard } from '@/components/shop/ProductCard'
+'use client'
 
-// Mock data - will fetch from database after seed
-const products = [
-  {
-    id: '1',
-    slug: 'inel-heritage-signet',
-    nameRo: 'Inel Heritage Signet',
-    basePrice: 1250,
-    images: [{ url: '/products/ring-1.jpg', altTextRo: 'Inel Heritage Signet' }],
-    featured: true,
-    inStock: true,
-  },
-  {
-    id: '2',
-    slug: 'bratara-clasica-lant',
-    nameRo: 'Brățară Clasică Lanț',
-    basePrice: 1850,
-    images: [{ url: '/products/bracelet-1.jpg', altTextRo: 'Brățară Clasică Lanț' }],
-    featured: true,
-    inStock: true,
-  },
-  {
-    id: '3',
-    slug: 'colier-traditional',
-    nameRo: 'Colier Tradițional',
-    basePrice: 2100,
-    images: [{ url: '/products/necklace-1.jpg', altTextRo: 'Colier Tradițional' }],
-    limitedDrop: true,
-    inStock: true,
-  },
-  {
-    id: '4',
-    slug: 'cercei-eleganti',
-    nameRo: 'Cercei Eleganți',
-    basePrice: 890,
-    images: [{ url: '/products/earrings-1.jpg', altTextRo: 'Cercei Eleganți' }],
-    inStock: true,
-  },
-  {
-    id: '5',
-    slug: 'inel-vintage',
-    nameRo: 'Inel Vintage',
-    basePrice: 1450,
-    images: [{ url: '/products/ring-2.jpg', altTextRo: 'Inel Vintage' }],
-    inStock: true,
-  },
-  {
-    id: '6',
-    slug: 'bratara-minimalista',
-    nameRo: 'Brățară Minimalistă',
-    basePrice: 950,
-    images: [{ url: '/products/bracelet-2.jpg', altTextRo: 'Brățară Minimalistă' }],
-    inStock: true,
-  },
-  {
-    id: '7',
-    slug: 'colier-statement',
-    nameRo: 'Colier Statement',
-    basePrice: 2450,
-    images: [{ url: '/products/necklace-2.jpg', altTextRo: 'Colier Statement' }],
-    limitedDrop: true,
-    inStock: true,
-  },
-  {
-    id: '8',
-    slug: 'cercei-perle',
-    nameRo: 'Cercei cu Perle',
-    basePrice: 1200,
-    images: [{ url: '/products/earrings-2.jpg', altTextRo: 'Cercei cu Perle' }],
-    inStock: true,
-  },
-]
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
+import Link from 'next/link'
 
-export default async function CollectionsPage() {
-  const t = await getTranslations()
+interface Product {
+  id: string
+  name: string
+  price: number
+  image: string
+  stock: number
+  slug: string
+}
+
+function ProductCard(product: Product) {
+  return (
+    <Link href={`/product/${product.slug}`}>
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="group cursor-pointer">
+        <div className="relative overflow-hidden bg-white aspect-square mb-6">
+          <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          {product.stock <= 3 && (
+            <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm px-4 py-2">
+              <span style={{ fontSize: '11px', fontWeight: 500, color: '#c9a66b', letterSpacing: '0.08em' }}>DOAR {product.stock} BUCĂȚI</span>
+            </div>
+          )}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#c9a66b] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+        </div>
+        <div className="text-center">
+          <h3 className="mb-2 tracking-luxury" style={{ fontSize: '15px', fontWeight: 400, color: '#2a2a2a', letterSpacing: '0.05em' }}>{product.name}</h3>
+          <p className="tracking-luxury" style={{ fontSize: '16px', fontWeight: 600, color: '#c9a66b' }}>{product.price.toLocaleString('ro-RO')} RON</p>
+        </div>
+      </motion.div>
+    </Link>
+  )
+}
+
+export default function CollectionsPage() {
+  const products: Product[] = [
+    { id: '1', slug: 'inel-heritage-signet', name: 'Inel Heritage Signet', price: 1250, image: 'https://images.unsplash.com/photo-1708221269975-cc31682c7fc4?w=1080', stock: 2 },
+    { id: '2', slug: 'bratara-clasica-lant', name: 'Brățară Clasică Lanț', price: 1850, image: 'https://images.unsplash.com/photo-1762232977931-2e3f5949b2aa?w=1080', stock: 1 },
+    { id: '3', slug: 'inel-royal-seal', name: 'Inel Royal Seal', price: 1650, image: 'https://images.unsplash.com/photo-1758362197676-228703a17e69?w=1080', stock: 3 },
+    { id: '4', slug: 'colier-lant-lux', name: 'Colier Lanț de Lux', price: 2250, image: 'https://images.unsplash.com/photo-1619525673983-81151d6cc193?w=1080', stock: 2 },
+  ]
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h1 className="font-playfair text-5xl font-bold tracking-luxury mb-4">
-            {t('nav.collections')}
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Explorează colecția completă de bijuterii artizanale
-          </p>
+    <div className="min-h-screen bg-[#faf8f5] pt-32 pb-20">
+      <div className="max-w-[1800px] mx-auto px-8 lg:px-16">
+        <div className="text-center mb-20">
+          <h1 className="font-playfair tracking-luxury mb-4" style={{ fontSize: 'clamp(36px, 8vw, 64px)', fontWeight: 700, letterSpacing: '0.05em' }}>Colecțiile Noastre</h1>
+          <p className="tracking-luxury" style={{ fontSize: '14px', fontWeight: 300, color: '#c9a66b', letterSpacing: '0.08em' }}>PIESE SELECTATE METICULOS PENTRU BĂRBATUL RAFINAT</p>
         </div>
-
-        {/* Filter & Sort */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div className="flex gap-4">
-            <select className="px-4 py-2 border border-black/20 rounded-md bg-white">
-              <option value="">Toate categoriile</option>
-              <option value="rings">{t('categories.rings')}</option>
-              <option value="bracelets">{t('categories.bracelets')}</option>
-              <option value="necklaces">{t('categories.necklaces')}</option>
-              <option value="earrings">{t('categories.earrings')}</option>
-            </select>
-          </div>
-          <div>
-            <select className="px-4 py-2 border border-black/20 rounded-md bg-white">
-              <option value="">Sortează</option>
-              <option value="price-asc">Preț: Crescător</option>
-              <option value="price-desc">Preț: Descrescător</option>
-              <option value="newest">Cele mai noi</option>
-              <option value="popular">Cele mai populare</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-
-        {/* Pagination placeholder */}
-        <div className="mt-12 text-center">
-          <p className="text-gray-600">Se afișează {products.length} produse</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {products.map((product) => <ProductCard key={product.id} {...product} />)}
         </div>
       </div>
     </div>
