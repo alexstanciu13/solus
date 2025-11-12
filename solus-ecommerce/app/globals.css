@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 250 244 237;
+    --foreground: 0 0 0;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  @font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+  }
+}
+
+@layer utilities {
+  .tracking-luxury {
+    letter-spacing: 0.08em;
+  }
+}
